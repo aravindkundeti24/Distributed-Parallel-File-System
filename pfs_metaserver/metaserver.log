@@ -1,0 +1,7 @@
+pfs_metaserver.cpp:main: PFS meta server start! Hostname: e5-cse-135-08.cse.psu.edu, IP: 130.203.16.27
+main: Launching PFS metadata server on e5-cse-135-08.cse.psu.edu, with listen port 50913...
+Metadata server listening on 0.0.0.0:50913
+META SERVER ALIVe
+Client registered: ID = 1, Hostname = e5-cse-135-21.cse.psu.edu
+Client disconnected: ID = 1
+Client 1 is not registered.

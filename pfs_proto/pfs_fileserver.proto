@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+// Proto file for fileserver-client connections
+import "google/protobuf/empty.proto";
+
+package pfsfile;
+
+// Common status message
+message FileServerStatus  {
+  bool success = 1;
+  string message = 2;
+}
+
+// Identifiers for blocks and files
+message FileIdentifier {
+  string filename = 1;
+}
+
+message BlockIdentifier {
+  string filename = 1;
+  uint64 block_number = 2;  // Block number within the file
+}
+
+message ReadBlockRequest {
+  BlockIdentifier block = 1;
+  int32 client_id = 2;       // ID of the client requesting the read
+  uint64 offset = 3;         // Starting offset within the block for the read
+  uint64 num_bytes = 4;      // Number of bytes to read
+}
+
+message ReadBlockResponse {
+  bool success = 1;
+  bytes data = 2;            // The actual data read from the block
+  uint64 bytes_read = 3;     // Number of bytes read (useful for partial reads)
+  string message = 4;
+}
+
+
+// Write block request
+message WriteBlockRequest {
+  BlockIdentifier block = 1;
+  bytes data = 2;            // Data to write to the block
+  int32 client_id = 3;       // ID of the client performing the write
+  uint64 offset_in_block = 4; // Offset within the block for partial writes
+  uint64 length = 5;          // Length of data being written
+}
+
+// Identifies the file to be deleted
+message DeleteBlockRequest {
+  string filename = 1;  // Name of the file for which all blocks should be deleted
+}
+message FileBlocks {
+    string filename = 1;
+    repeated int32 block_numbers = 2; // Blocks to delete
+}
+// File Server Service for block operations
+service FileServerService {
+  // Read data from a block
+  rpc ReadBlock(ReadBlockRequest) returns (ReadBlockResponse);
+
+  // Write data to a block
+  rpc WriteBlock(WriteBlockRequest) returns (FileServerStatus);
+
+  // Delete data associated with a specific block
+rpc DeleteFileBlocks(FileBlocks) returns (FileServerStatus);
+
+  // alive
+
+  // Alive check to verify server is responsive
+  rpc Alive(google.protobuf.Empty) returns (FileServerStatus);
+}
